@@ -16,7 +16,7 @@ export const Chatroom: React.FunctionComponent<ChatroomProps> = () => {
     const sendingMessage = false;
     const loadingMessages = false;
     const { id } = useParams<RouteParams>();
-    const currentUser: models.User | undefined = { id: '1', name: 'Test User' };
+    const currentUser: models.User | undefined = { name: '1', username: 'Test User' };
 
     const sendMessage = () => {
         if (sendingMessage) {
@@ -32,8 +32,8 @@ export const Chatroom: React.FunctionComponent<ChatroomProps> = () => {
         <section className='chat'>
             <main className='chat__view'>
                 {(messages || [])?.map((m, i) => {
-                    const isContinued = (i + 1 < messages!.length) && messages![i + 1].sentBy.id === m.sentBy.id;
-                    const isCurrentUser = m.sentBy.id === currentUser?.id;
+                    const isContinued = (i + 1 < messages!.length) && messages![i + 1].sentBy.name === m.sentBy.name;
+                    const isCurrentUser = m.sentBy.name === currentUser?.name;
                     return <ChatBubble key={m.id} name={m.sentBy.name} sentByUser={isCurrentUser} appearContinued={isContinued} content={m.content} />
                 })}
             </main>

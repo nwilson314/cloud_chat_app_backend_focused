@@ -50,5 +50,8 @@
     "presets": [
       "react-app"
     ]
+  },
+  "devDependencies": {
+    "@types/react": "^17.0.38"
   }
 }

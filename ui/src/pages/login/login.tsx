@@ -1,18 +1,21 @@
 import './login.scss';
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { APIService } from '../../services';
 
 export interface LoginProps { }
 
 export const LoginPage: React.FunctionComponent<LoginProps> = () => {
-    const loggingIn = false;
+    const navigate = useNavigate();
+
+    const [usernameInvalid, setUsernameInvalid] = useState<boolean>(false);
     const [username, setUsername] = useState('');
 
     // need to be able to login
-    const login = () => {
-        if (loggingIn) {
-            return;
-        }
+    const login = async () => {
+    await APIService.login(username)
+        .then((name) => navigate('/chat', {state: {username:username, name:name}}))
+        .catch(() => setUsernameInvalid(true));
     }
 
     return (
@@ -23,6 +26,10 @@ export const LoginPage: React.FunctionComponent<LoginProps> = () => {
                         welcome to <span className='app-name'>the chat site</span>
                     </h1>
                     <h2>Please login or <Link to='/sign-up'>sign up</Link></h2>
+                    {
+                        usernameInvalid &&
+                        <h3>*Username invalid. <Link to='/sign-up'>Sign up</Link> instead?*</h3>
+                    }
                     <label>
                         Username
                         <input type='text' value={username} onChange={(e) => setUsername(e.target.value.toLowerCase())} />

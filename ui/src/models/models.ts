@@ -1,8 +1,8 @@
 // feel free to change all schemas
 
 export interface User {
-    id: string;
-    name: string
+    username: string;
+    name: string;
 }
 
 export interface Message {

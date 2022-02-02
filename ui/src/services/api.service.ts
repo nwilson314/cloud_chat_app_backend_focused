@@ -1,3 +1,5 @@
+import { models } from '../models'
+
 export interface APIErrorResponse {
     code: number; 
     message: string;
@@ -15,6 +17,7 @@ export class APIService {
         const res = await fetch(route, options);
         await APIService.throwIfError(res);
         if (APIService.isJson(res)) {
+            console.log('in json')
             return await res.json();
         }
         return await res.text();
@@ -33,7 +36,22 @@ export class APIService {
 
     static async ping(): Promise<string> {
         return APIService.do(`${API_URL}/ping`, {
-            method: 'GET',
+            method: 'GET'
         });
+    }
+
+    static async sign_up(newUser: models.User): Promise<string> {
+        return APIService.do(`${API_URL}/sign-up`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newUser)
+        })
+    }
+
+    static async login(username: string): Promise<string> {
+        return APIService.do(`${API_URL}/login?username=${username}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        })
     }
 }

@@ -1,19 +1,40 @@
 import './chat.scss';
-import { Link, NavLink, Route, RouteProps, Routes } from 'react-router-dom';
-import React from 'react';
+import { Link, Location, NavLink, Route, Routes, useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
 import { stringToColor } from '../../utils';
 import { Chatroom, ChatroomCard, NewChatroom } from '../../components';
 import { models } from '../../models';
 
-export interface ChatProps { }
+export interface ChatProps { 
+    username: string,
+    name: string,
+    loggedIn: boolean,
+    handleUserLogin(isLoggedIn: boolean, username: string, name: string): void
+}
 
-export const ChatPage: React.FunctionComponent<ChatProps> = () => {
+export const ChatPage: React.FunctionComponent<ChatProps> = ({ username, name, loggedIn, handleUserLogin }) => {
+    const location = useLocation();
 
+    const [currentUser, setCurrentUser] = useState<models.User>({username: username, name: name});
+    const [userLoggedIn, setUserLoggedIn] = useState<boolean>(loggedIn);
+
+    useEffect(() => {
+        if (location.state) {
+            setUserLoggedIn(true)
+           
+            const state = location.state as ChatProps;
+            console.log("location use effect")
+            const updateUser: models.User = {
+                username: state.username,
+                name: state.name
+            }
+            handleUserLogin(true, state.username, state.name)
+            setCurrentUser(updateUser)
+        }
+        
+    }, [location])
     // need to load user
-    const currentUser: models.User = {
-        id: '1',
-        name: 'Test User',
-    };
+    
 
     // need to load chatrooms
     const chatrooms: models.Chatroom[] = [{
@@ -43,7 +64,7 @@ export const ChatPage: React.FunctionComponent<ChatProps> = () => {
                         <div className='identifiers'>
                             <h1>the chat site</h1>
                             <h2>
-                                chatting as <span className='name' style={{ color: stringToColor(currentUser?.name) }}>{currentUser?.name}</span>
+                                chatting as <span className='name' style={{ color: stringToColor(currentUser.username) }}>{currentUser.username}</span>
                             </h2>
                         </div>
                         <div className='actions'>
